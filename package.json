@@ -1,17 +1,27 @@
 {
-  "name": "cordova-plugin-clsprint",
-  "version": "1.0.0",
+  "name": "cordova-plugin-clsprinter",
+  "version": "0.0.1",
   "description": "Cordova Plugin for Citizen CL-S521 Printer",
   "cordova": {
-    "id": "cordova-plugin-clsprint",
+    "id": "cordova-plugin-clsprinter",
     "platforms": [
       "android"
     ]
   },
   "keywords": [
+    "Toast",
+    "Notification",
+    "Message",
+    "Alert",
     "ecosystem:cordova",
     "cordova-android"
   ],
-  "author": "Adrian Axinte",
-  "license": "ISC"
+  "engines": [
+    {
+      "name": "cordova",
+      "version": ">=3.0.0"
+    }
+  ],
+  "author": "Adrian Axinte <adrian.kaiax@gmail.com>",
+  "license": "MIT"
 }
