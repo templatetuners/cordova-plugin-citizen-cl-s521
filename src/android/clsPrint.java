@@ -11,9 +11,16 @@ import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.LOG;
 import org.apache.cordova.PluginResult;
 
+/*
 import android.widget.Toast;
 import android.content.Context;
 
+
+import android.print.PrintAttributes;
+import android.print.PrintDocumentAdapter;
+import android.print.PrintJob;
+import android.print.PrintManager;
+*/
 
 import com.citizen.sdk.labelprint.LabelConst;
 import com.citizen.sdk.labelprint.LabelPrinter;
@@ -29,9 +36,10 @@ import org.json.JSONObject;
 public class clsPrint extends CordovaPlugin {
 
     // Constructor
-    
+    /*
     public printplugin() {
     }
+    */
     
 
         //final String DEFAULT_IP_ADDRESS = "192.168.128.212";
@@ -42,7 +50,7 @@ public class clsPrint extends CordovaPlugin {
 
 
     // Print
-    private void print(LabelPrinter printer){
+    private void print(LabelPrinter printer, CallbackContext callbackContext){
         LabelDesign design = new LabelDesign();
         int errflg = 0;
         int result;
@@ -78,29 +86,32 @@ public class clsPrint extends CordovaPlugin {
 
         // Err Message
         if (errflg != 0){
-            Toast.makeText(MainActivity.this, errmsg, Toast.LENGTH_LONG).show();
+            //Toast.makeText(MainActivity.this, errmsg, Toast.LENGTH_LONG).show();
+            callbackContext.error(errmsg);
         }
 
     }
 
 
     // Disonnect
-    private void disconnect(LabelPrinter printer){
+    private void printDisconnect(LabelPrinter printer){
         // Disconnect printer
         int result = printer.disconnect();
         if (LabelConst.CLS_SUCCESS == result) {
             // Disconnect Success
-            Toast.makeText(MainActivity.this, "Disconnect Success :" + Integer.toString(result), Toast.LENGTH_LONG).show();
+            //Toast.makeText(MainActivity.this, "Disconnect Success :" + Integer.toString(result), Toast.LENGTH_LONG).show();
+            //callbackContext.success("Disconnect Success :" + Integer.toString(result));
         }
         else {
             // Disconnect Error
-            Toast.makeText(MainActivity.this, "Disconnect Error :" + Integer.toString(result), Toast.LENGTH_LONG).show();
+            //Toast.makeText(MainActivity.this, "Disconnect Error :" + Integer.toString(result), Toast.LENGTH_LONG).show();
+            //callbackContext.error("Disconnect Error :" + Integer.toString(result));
         }
     }
 
 
     // Status
-    private void status(LabelPrinter printer){
+    private void printerStatus(LabelPrinter printer){
         String msg = "";
         int result;
 
@@ -108,7 +119,8 @@ public class clsPrint extends CordovaPlugin {
         result = printer.printerCheck();
         if (LabelConst.CLS_SUCCESS != result){
             // SendData Error
-            alertDialog("Result", "Send Error : " + Integer.toString(result));
+            //alertDialog("Result", "Send Error : " + Integer.toString(result));
+            //callbackContext.error("Send Error : " + Integer.toString(result));
             return;
         }
 
@@ -120,13 +132,14 @@ public class clsPrint extends CordovaPlugin {
         msg = msg + Integer.toString(printer.getPause()) + ":\tPause" + "\r\n";
         msg = msg + Integer.toString(printer.getWaitingForPeeling()) + ":\tWaiting for peeling" + "\r\n";
 
-        alertDialog("Status data", msg);
+        // alertDialog("Status data", msg);
+        //callbackContext.success("Status data" + msg);
     }
 
 
     // Connect
     //private void connect(LabelPrinter printer, int portType, String address){
-    private void connect(LabelPrinter printer, int portType, String address, CallbackContext callbackContext){
+    private void printConnect(LabelPrinter printer, int portType, String address){
 
         // Connect printer
         int result = LabelConst.CLS_SUCCESS;
@@ -138,20 +151,22 @@ public class clsPrint extends CordovaPlugin {
             // Connect Success
             //Toast.makeText(MainActivity.this, "Connect Success :" + Integer.toString(result), Toast.LENGTH_LONG).show();
             //callbackContext.error("Connect Success :" + Integer.toString(result));
-            callbackContext.success();
+            //callbackContext.success("Connect Success :" + Integer.toString(result));
         } else {
             // Connect Error
             //Toast.makeText(MainActivity.this, "Connect or Printer Error :" + Integer.toString(result), Toast.LENGTH_LONG).show();
-            callbackContext.error("Connect or Printer Error :" + Integer.toString(result));
+            //callbackContext.error("Connect or Printer Error :" + Integer.toString(result));
         }
 
         //saveAddress(portType,  address);
     }
 
+    /*
     public void isConnected() {
         // Manage connection checking here
        callbackContext.success();
     }
+    */
 
 
     @Override
@@ -160,17 +175,17 @@ public class clsPrint extends CordovaPlugin {
             String message = args.getString(0);
             this.coolMethod(message, callbackContext);
             return true;
-        } else if(action.equals('connect')){
+        } else if(action.equals("printConnect")){
 
             // Connect printer
-            //connect(printer, LabelConst.CLS_PORT_WiFi, address, callbackContext);
-            this.isConnected();
+            printConnect(printer, LabelConst.CLS_PORT_WiFi, address, callbackContext);
+            //this.isConnected();
 
-        } else if(action.equals('disconnect')){
+        } else if(action.equals("printDisconnect")){
             // Disconnect
-            disconnect(printer);
+            printDisconnect(printer);
 
-        } else if(action.equals('print')){
+        } else if(action.equals("printLabel")){
 
             // Create an instance( LabelDesign class )
             LabelDesign design = new LabelDesign();
@@ -189,16 +204,17 @@ public class clsPrint extends CordovaPlugin {
             int result = printer.print(design, 0001);
             if (LabelConst.CLS_SUCCESS != result) {
                 // Print Error
-                Toast.makeText(MainActivity.this, "Print Error :" + Integer.toString(result), Toast.LENGTH_LONG).show();
+                //Toast.makeText(MainActivity.this, "Print Error :" + Integer.toString(result), Toast.LENGTH_LONG).show();
+                callbackContext.error("Print Error :" + Integer.toString(result));
             }
 
 
-        } else if(action.equals('status')){
+        } else if(action.equals("printerStatus")){
             // Status
-            status(printer);
-        } else {
+            printerStatus(printer);
+        } /*else {
             return false;
-        }
+        }*/
 
         // Only alert and confirm are async.
         callbackContext.success();

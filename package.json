@@ -1,7 +1,7 @@
 {
   "name": "cordova-plugin-clsprint",
   "version": "1.0.0",
-  "description": "",
+  "description": "Cordova Plugin for Citizen CL-S521 Printer",
   "cordova": {
     "id": "cordova-plugin-clsprint",
     "platforms": [
@@ -12,6 +12,6 @@
     "ecosystem:cordova",
     "cordova-android"
   ],
-  "author": "",
+  "author": "Adrian Axinte",
   "license": "ISC"
 }
