@@ -8,11 +8,16 @@
       "android"
     ]
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/templatetuners/cordova-plugin-clsprinter"
+  },
   "keywords": [
-    "Toast",
-    "Notification",
-    "Message",
-    "Alert",
+    "printer",
+    "citizen",
+    "label",
+    "qr",
+    "barcode",
     "ecosystem:cordova",
     "cordova-android"
   ],
@@ -23,5 +28,5 @@
     }
   ],
   "author": "Adrian Axinte <adrian.kaiax@gmail.com>",
-  "license": "MIT"
+  "license": "Apache-2.0",
 }
