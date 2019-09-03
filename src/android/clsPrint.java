@@ -40,6 +40,90 @@ public class clsPrint extends CordovaPlugin {
         // Get Address
         String address = "5.0.203.4";
 
+
+    // Print
+    private void print(LabelPrinter printer){
+        LabelDesign design = new LabelDesign();
+        int errflg = 0;
+        int result;
+        String errmsg = "";
+
+        // Text
+        result = design.drawTextPtrFont("Sample Print", LabelConst.CLS_LOCALE_JP, LabelConst.CLS_PRT_FNT_TRIUMVIRATE_B, LabelConst.CLS_RT_NORMAL, 1, 1, LabelConst.CLS_PRT_FNT_SIZE_24, 20, 300);
+        if (LabelConst.CLS_SUCCESS != result) {
+            errmsg = errmsg + Integer.toString(result) + ":\tdrawTextPtrFont Error\r\n";
+            errflg = 1;
+        }
+
+        // QRCode
+        result = design.drawQRCode("DrawQRCode", LabelConst.CLS_ENC_CDPG_US_ASCII, LabelConst.CLS_RT_NORMAL, 4, LabelConst.CLS_QRCODE_EC_LEVEL_H, 20, 220);
+        if (LabelConst.CLS_SUCCESS != result){
+            errmsg = errmsg + Integer.toString(result) + ":\tdrawQRCode Error\r\n";
+            errflg = 1;
+        }
+
+        // BarCode
+        result = design.drawBarCode("0123456789", LabelConst.CLS_BCS_CODE128, LabelConst.CLS_RT_NORMAL, 3, 3, 30, 20, 70, LabelConst.CLS_BCS_TEXT_SHOW );
+        if (LabelConst.CLS_SUCCESS != result){
+            errmsg = errmsg + Integer.toString(result) + ":\tdrawBarCode Error\r\n";
+            errflg = 1;
+        }
+
+        // Print
+        result = printer.print(design, 1);
+        if (LabelConst.CLS_SUCCESS != result){
+            errmsg = errmsg + Integer.toString(result) + ":\tprint Error";
+            errflg = 1;
+        }
+
+        // Err Message
+        if (errflg != 0){
+            Toast.makeText(MainActivity.this, errmsg, Toast.LENGTH_LONG).show();
+        }
+
+    }
+
+
+    // Disonnect
+    private void disconnect(LabelPrinter printer){
+        // Disconnect printer
+        int result = printer.disconnect();
+        if (LabelConst.CLS_SUCCESS == result) {
+            // Disconnect Success
+            Toast.makeText(MainActivity.this, "Disconnect Success :" + Integer.toString(result), Toast.LENGTH_LONG).show();
+        }
+        else {
+            // Disconnect Error
+            Toast.makeText(MainActivity.this, "Disconnect Error :" + Integer.toString(result), Toast.LENGTH_LONG).show();
+        }
+    }
+
+
+    // Status
+    private void status(LabelPrinter printer){
+        String msg = "";
+        int result;
+
+        // Checks the status and populates into each property
+        result = printer.printerCheck();
+        if (LabelConst.CLS_SUCCESS != result){
+            // SendData Error
+            alertDialog("Result", "Send Error : " + Integer.toString(result));
+            return;
+        }
+
+        msg = msg + Integer.toString(printer.getCommandInterpreterInAction()) + ":\tCommand interpreter in action" + "\r\n";
+        msg = msg + Integer.toString(printer.getPaperError()) + ":\tPaper error" + "\r\n";
+        msg = msg + Integer.toString(printer.getRibbonEnd()) + ":\tRibbon end" + "\r\n";
+        msg = msg + Integer.toString(printer.getBatchProcessing()) + ":\tBatch processing" + "\r\n";
+        msg = msg + Integer.toString(printer.getPrinting()) + ":\tPrinting" + "\r\n";
+        msg = msg + Integer.toString(printer.getPause()) + ":\tPause" + "\r\n";
+        msg = msg + Integer.toString(printer.getWaitingForPeeling()) + ":\tWaiting for peeling" + "\r\n";
+
+        alertDialog("Status data", msg);
+    }
+
+
     // Connect
     //private void connect(LabelPrinter printer, int portType, String address){
     private void connect(LabelPrinter printer, int portType, String address, CallbackContext callbackContext){
@@ -70,7 +154,6 @@ public class clsPrint extends CordovaPlugin {
     }
 
 
-
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
         if (action.equals("coolMethod")) {
@@ -79,17 +162,40 @@ public class clsPrint extends CordovaPlugin {
             return true;
         } else if(action.equals('connect')){
 
-
             // Connect printer
             //connect(printer, LabelConst.CLS_PORT_WiFi, address, callbackContext);
             this.isConnected();
 
-
-
         } else if(action.equals('disconnect')){
+            // Disconnect
+            disconnect(printer);
 
         } else if(action.equals('print')){
 
+            // Create an instance( LabelDesign class )
+            LabelDesign design = new LabelDesign();
+            // Text
+            design.drawTextPtrFont("Sample Print", LabelConst.CLS_LOCALE_JP, LabelConst.CLS_PRT_FNT_TRIUMVIRATE_B, LabelConst.CLS_RT_NORMAL, 1, 1, LabelConst.CLS_PRT_FNT_SIZE_24, 20, 300);
+            // QRCode
+            design.drawQRCode("DrawQRCode", LabelConst.CLS_ENC_CDPG_US_ASCII, LabelConst.CLS_RT_NORMAL, 4, LabelConst.CLS_QRCODE_EC_LEVEL_H, 20, 220);
+            // BarCode
+            design.drawBarCode("0123456789", LabelConst.CLS_BCS_CODE128, LabelConst.CLS_RT_NORMAL, 3, 3, 30, 20, 70, LabelConst.CLS_BCS_TEXT_SHOW);
+            int printDarkness = printer.getPrintDarkness();
+            if (LabelConst.CLS_PROPERTY_DEFAULT == printDarkness) {
+                // Set Properties
+                printer.setPrintDarkness(10);
+            }
+            // Print Label
+            int result = printer.print(design, 0001);
+            if (LabelConst.CLS_SUCCESS != result) {
+                // Print Error
+                Toast.makeText(MainActivity.this, "Print Error :" + Integer.toString(result), Toast.LENGTH_LONG).show();
+            }
+
+
+        } else if(action.equals('status')){
+            // Status
+            status(printer);
         } else {
             return false;
         }
