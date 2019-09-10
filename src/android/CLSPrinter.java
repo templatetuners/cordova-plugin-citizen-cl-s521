@@ -1,22 +1,15 @@
-// based on https://www.outsystems.com/blog/posts/how-to-create-a-cordova-plugin-from-scratch/
+// based on 
+// https://www.outsystems.com/blog/posts/how-to-create-a-cordova-plugin-from-scratch/
 
 package com.justapplications.cordova.plugin;
 
 // The native Toast API
 import android.widget.Toast;
 
-/*
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.DialogInterface;
-import android.os.Bundle;
-*/
-
 // Cordova-required packages
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.PluginResult;
-
 import org.apache.cordova.CordovaWebView;
 import org.apache.cordova.CordovaInterface;
 
@@ -28,42 +21,54 @@ import com.citizen.sdk.labelprint.LabelConst;
 import com.citizen.sdk.labelprint.LabelPrinter;
 import com.citizen.sdk.labelprint.LabelDesign;
 
-import android.graphics.BitmapFactory;
-
 public class CLSPrinter extends CordovaPlugin {
 
     //final String DEFAULT_IP_ADDRESS = "192.168.128.212";
     //private static final String DURATION_LONG = "long";
-
     private static final String LOG_TAG = "Printer";
-
     private LabelPrinter printer;
 
     public void initialize(CordovaInterface cordova, CordovaWebView webView) {
         super.initialize(cordova, webView);
-
         // Create an instance( LabelPrinter class )
         printer = new LabelPrinter();
     }
 
     // Connect
     private void connect(LabelPrinter printer, int portType, String address){
-
         // Connect printer
         int result = LabelConst.CLS_SUCCESS;
-        //WiFi or Bluetooth
+
+        // WiFi or Bluetooth
         result = printer.connect(portType, address);
         if (LabelConst.CLS_SUCCESS == result) {
+            String msg = "";
             // Connect Success
-            Toast.makeText(cordova.getActivity(), "Connect Success :" + Integer.toString(result), Toast.LENGTH_LONG).show();
+            if(result == 0){
+                msg = "Connect Success";
+            } else {
+                msg = "Connect Success :" + Integer.toString(result);
+            }
+            Toast.makeText(cordova.getActivity(), "Connect Success", Toast.LENGTH_LONG).show();
+            //Toast.makeText(cordova.getActivity(), "Connect Success :" + Integer.toString(result), Toast.LENGTH_LONG).show();
         } else {
-            // Connect Error
-            Toast.makeText(cordova.getActivity(), "Connect or Printer Error :" + Integer.toString(result), Toast.LENGTH_LONG).show();
+            String msg = "";
+            if(result == 1001){
+                msg = "The printer is already connected.";
+            } else if(result == 1003){
+                msg = "Failed to connect to the printer.";
+            } else if(result == 1102){
+                msg = "The printer is offline.";
+            } else {
+                // Connect Error
+                msg = "Connect or Printer Error :" + Integer.toString(result);
+            }
+            Toast.makeText(cordova.getActivity(), msg, Toast.LENGTH_LONG).show();
         }
         //saveAddress(portType,  address);
     }
 
-    // print
+    // Print
     private void print(LabelPrinter printer){
         LabelDesign design = new LabelDesign();
         int errflg = 0;
@@ -117,12 +122,23 @@ public class CLSPrinter extends CordovaPlugin {
         // Disconnect printer
         int result = printer.disconnect();
         if (LabelConst.CLS_SUCCESS == result) {
+            String msg = "";
+            if(result == 0){
+                msg = "Disconnect Success";
+            } else {
+                msg = "Disconnect Success :" + Integer.toString(result);
+            }
             // Disconnect Success
-            Toast.makeText(cordova.getActivity(), "Disconnect Success :" + Integer.toString(result), Toast.LENGTH_LONG).show();
-        }
-        else {
+            Toast.makeText(cordova.getActivity(), msg, Toast.LENGTH_LONG).show();
+        } else {
+            String msg = "";
+            if(result == 1002){
+                msg = "The printer is not connected.";
+            } else {
+                msg = "Disconnect Error :" + Integer.toString(result);
+            }
             // Disconnect Error
-            Toast.makeText(cordova.getActivity(), "Disconnect Error :" + Integer.toString(result), Toast.LENGTH_LONG).show();
+            Toast.makeText(cordova.getActivity(), msg, Toast.LENGTH_LONG).show();
         }
     }
 
@@ -220,8 +236,14 @@ public class CLSPrinter extends CordovaPlugin {
             // Print Label
             int printResult = printer.print(design, 0001);
             if (LabelConst.CLS_SUCCESS != printResult) {
+                String msg = "";
+                if(printResult == 1002){
+                    msg = "The printer is not connected.";
+                } else {
+                    msg = "Print Error :" + Integer.toString(printResult);
+                }
                 // Print Error
-                Toast.makeText(cordova.getActivity(), "Print Error :" + Integer.toString(printResult), Toast.LENGTH_LONG).show();
+                Toast.makeText(cordova.getActivity(), msg, Toast.LENGTH_LONG).show();
             } else {
                 Toast.makeText(cordova.getActivity(), "Printed!", Toast.LENGTH_LONG).show();
             }   
