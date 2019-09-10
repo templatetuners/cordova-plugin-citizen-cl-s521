@@ -14,7 +14,7 @@ https://www.citizen-systems.com/en/products/printer/label/cl-s521/
 
 ## Quick Example
 
-    window.plugins.clsPrinter.show('Printing here!', 'long', function() {
+    window.plugins.clsPrinter.connect('Connected!', '0.0.0.0', function() {
         console.log('Works!');
     }, function(err) {
         console.log('Uh oh... ' + err);
