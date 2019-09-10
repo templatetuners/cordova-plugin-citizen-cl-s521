@@ -3,13 +3,38 @@
 // Empty constructor
 function CLSPrinter() {}
 
+// Print
 // The function that passes work along to native shells
-// Message is a string, duration may be 'long' or 'short'
-CLSPrinter.prototype.show = function(message, duration, successCallback, errorCallback) {
+// Message is a string
+CLSPrinter.prototype.print = function(message, address, successCallback, errorCallback) {
   	var options = {};
   	options.message = message;
-  	options.duration = duration;
-  	cordova.exec(successCallback, errorCallback, 'CLSPrinter', 'show', [options]);
+  	options.address = address;
+  	cordova.exec(successCallback, errorCallback, 'CLSPrinter', 'print', [options]);
+}
+
+// Connect
+CLSPrinter.prototype.connect = function(message, address, successCallback, errorCallback) {
+  	var options = {};
+  	options.message = message;
+  	options.address = address;
+  	cordova.exec(successCallback, errorCallback, 'CLSPrinter', 'connect', [options]);
+}
+
+// Disonnect
+CLSPrinter.prototype.disconnect = function(message, address, successCallback, errorCallback) {
+  	var options = {};
+  	options.message = message;
+  	options.address = address;
+  	cordova.exec(successCallback, errorCallback, 'CLSPrinter', 'disconnect', [options]);
+}
+
+// Status
+CLSPrinter.prototype.status = function(message, address, successCallback, errorCallback) {
+  	var options = {};
+  	options.message = message;
+  	options.address = address;
+  	cordova.exec(successCallback, errorCallback, 'CLSPrinter', 'status', [options]);
 }
 
 // Installation constructor that binds CLSPrinter to window
