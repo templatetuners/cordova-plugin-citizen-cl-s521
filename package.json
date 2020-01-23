@@ -8,9 +8,10 @@
       "android"
     ]
   },
+  "main": "www/clsprinter.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/templatetuners/cordova-plugin-clsprinter"
+    "url": "git+https://github.com/templatetuners/cordova-plugin-clsprinter.git"
   },
   "keywords": [
     "printer",
@@ -21,12 +22,14 @@
     "ecosystem:cordova",
     "cordova-android"
   ],
-  "engines": [
-    {
-      "name": "cordova",
-      "version": ">=3.0.0"
-    }
-  ],
-  "author": "Adrian Axinte <adrian.kaiax@gmail.com>",
-  "license": "Apache-2.0",
+  "engines": [{
+    "name": "cordova",
+    "version": ">=3.0.0"
+  }],
+  "author": "Adrian Axinte",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/templatetuners/cordova-plugin-clsprinter/issues"
+  },
+  "homepage": "https://github.com/templatetuners/cordova-plugin-clsprinter#readme"
 }
